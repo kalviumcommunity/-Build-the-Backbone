@@ -7,6 +7,7 @@ const authController = require('./controllers/auth.controller');
 const restaurantController = require('./controllers/restaurant.controller');
 const orderController = require('./controllers/order.controller');
 const authMiddleware = require('./middleware/auth.middleware');
+const queryCount = require('./middleware/queryCount.middleware');
 
 const app = express();
 
@@ -14,6 +15,9 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(morgan('dev'));
+
+// Performance Profiling — only runs if LOG_QUERIES=true
+app.use(queryCount.attach);
 
 // Public Routes
 app.get('/api/health', restaurantController.getHealth);
@@ -27,6 +31,9 @@ app.use('/api/orders', authMiddleware);
 app.post('/api/orders', orderController.createOrder);
 app.get('/api/orders/history', orderController.getOrderHistory);
 app.get('/api/orders/:id', orderController.getOrderById);
+
+// Analytics Report — runs after response is sent
+app.use(queryCount.report);
 
 // Error Handling Middleware
 app.use((err, req, res, next) => {
