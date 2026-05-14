@@ -77,11 +77,11 @@ The test performs an authenticated user journey:
 
 ## Query Count After N+1 Fixes
 
-| Endpoint                      | Query Count | Improvement                      |
-| ----------------------------- | ----------- | -------------------------------- |
-| GET /api/restaurants          | 1           | No change                        |
-| GET /api/restaurants/:id/menu | 1           | 31 queries -> 1 query            |
-| GET /api/orders/history       | 1           | 36 queries -> 1 query            |
+| Endpoint                      | Query Count | Improvement           |
+| ----------------------------- | ----------- | --------------------- |
+| GET /api/restaurants          | 1           | No change             |
+| GET /api/restaurants/:id/menu | 1           | 31 queries -> 1 query |
+| GET /api/orders/history       | 1           | 36 queries -> 1 query |
 
 ### Improvement Summary
 
