@@ -115,6 +115,32 @@ Execution Time: 10.528 ms
 **Execution time:** 10.528 ms
 **Fix needed:** Add an index on `(user_id, created_at DESC)` to avoid the scan and sort.
 
+**After index:**
+
+```text
+Limit  (cost=20.76..20.77 rows=5 width=34) (actual time=1.394..1.396 rows=5.00 loops=1)
+	Buffers: shared hit=8 read=2
+	->  Sort  (cost=20.76..20.77 rows=5 width=34) (actual time=1.391..1.392 rows=5.00 loops=1)
+				Sort Key: created_at DESC
+				Sort Method: quicksort  Memory: 25kB
+				Buffers: shared hit=8 read=2
+				->  Bitmap Heap Scan on orders  (cost=4.32..20.70 rows=5 width=34) (actual time=1.330..1.349 rows=5.00 loops=1)
+							Recheck Cond: (user_id = 1)
+							Heap Blocks: exact=5
+							Buffers: shared hit=5 read=2
+							->  Bitmap Index Scan on idx_orders_user_id_created_at  (cost=0.00..4.32 rows=5 width=0) (actual time=0.602..0.602 rows=5.00 loops=1)
+										Index Cond: (user_id = 1)
+										Index Searches: 1
+										Buffers: shared read=2
+Planning:
+	Buffers: shared hit=113 read=1
+Planning Time: 5.742 ms
+Execution Time: 1.913 ms
+```
+
+**After index execution time:** 1.913 ms
+**Before -> After:** 10.528 ms -> 1.913 ms
+
 ### menu_items WHERE restaurant_id = 1 AND available = TRUE
 
 ```text
@@ -133,6 +159,27 @@ Execution Time: 2.128 ms
 **Execution time:** 2.128 ms
 **Fix needed:** Add an index on `restaurant_id` (or a partial index on `restaurant_id, available`) so menu lookups do not scan the full table.
 
+**After index:**
+
+```text
+Bitmap Heap Scan on menu_items  (cost=4.51..43.32 rows=30 width=72) (actual time=0.134..0.166 rows=30.00 loops=1)
+	Recheck Cond: (restaurant_id = 1)
+	Filter: available
+	Heap Blocks: exact=7
+	Buffers: shared hit=7 read=2
+	->  Bitmap Index Scan on idx_menu_items_restaurant_id  (cost=0.00..4.50 rows=30 width=0) (actual time=0.089..0.089 rows=30.00 loops=1)
+				Index Cond: (restaurant_id = 1)
+				Index Searches: 1
+				Buffers: shared read=2
+Planning:
+	Buffers: shared hit=93 read=1
+Planning Time: 11.315 ms
+Execution Time: 0.306 ms
+```
+
+**After index execution time:** 0.306 ms
+**Before -> After:** 2.128 ms -> 0.306 ms
+
 ### order_items WHERE order_id = 1
 
 ```text
@@ -150,6 +197,22 @@ Execution Time: 18.817 ms
 **Rows scanned:** 29994
 **Execution time:** 18.817 ms
 **Fix needed:** Add an index on `order_id` to speed up the per-order item lookup used by order history.
+
+**After index:**
+
+```text
+Index Scan using idx_order_items_order_id on order_items  (cost=0.29..8.39 rows=6 width=21) (actual time=0.113..0.115 rows=6.00 loops=1)
+	Index Cond: (order_id = 1)
+	Index Searches: 1
+	Buffers: shared hit=1 read=2
+Planning:
+	Buffers: shared hit=87 read=1
+Planning Time: 12.057 ms
+Execution Time: 0.252 ms
+```
+
+**After index execution time:** 0.252 ms
+**Before -> After:** 18.817 ms -> 0.252 ms
 
 ---
 
