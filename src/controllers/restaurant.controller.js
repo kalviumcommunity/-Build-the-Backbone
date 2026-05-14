@@ -34,40 +34,40 @@ const getRestaurants = async (req, res) => {
 /**
  * Get Restaurant Menu items with category details.
  * 
- * [PLANTED PERFORMANCE PROBLEM 4]
- * N+1 for category details inside a loop.
+ * FIXED: This function now uses a single JOIN query with json_agg
+ * instead of fetching items and then categories in a loop (N+1).
+ * Single query regardless of menu item count.
  */
 const getMenu = async (req, res) => {
     const { id } = req.params;
 
     console.log(`[Restaurant Controller] Fetching menu for Restaurant #${id}`);
 
-    // Query 1: Get menu items
-    const menuItemsResult = await db.query(
-        'SELECT * FROM menu_items WHERE restaurant_id = $1 AND is_available = TRUE',
-        [id]
-    );
-    const menuItems = menuItemsResult.rows;
+    // Single query with category details aggregated in
+    // No separate queries needed for category lookups
+    const result = await db.query(`
+        SELECT
+            mi.id,
+            mi.restaurant_id,
+            mi.name,
+            mi.description,
+            mi.price,
+            mi.available,
+            json_build_object(
+                'id', c.id,
+                'name', c.name
+            ) AS category
+        FROM menu_items mi
+        LEFT JOIN categories c ON c.id = mi.category_id
+        WHERE mi.restaurant_id = $1 AND mi.available = TRUE
+        ORDER BY mi.name
+    `, [id]);
 
-    const populatedMenu = [];
-
-    // // Attach category details to each item (N+1 query pattern)
-    // For each menu item, perform a separate query to fetch its category name.
-    for (const item of menuItems) {
-        const categoryResult = await db.query(
-            'SELECT * FROM categories WHERE id = $1',
-            [item.category_id]
-        );
-        
-        populatedMenu.push({
-            ...item,
-            category: categoryResult.rows[0] ? categoryResult.rows[0].name : 'Uncategorized'
-        });
-    }
+    const menuItems = result.rows;
 
     res.json({
         restaurant_id: id,
-        menu: populatedMenu
+        menu: menuItems
     });
 };
 
