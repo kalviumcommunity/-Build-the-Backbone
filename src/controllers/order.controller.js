@@ -16,7 +16,7 @@ const getOrderHistory = async (req, res) => {
 
     // Query 1: Get all orders for this user
     const ordersResult = await db.query(
-        'SELECT * FROM orders WHERE user_id = $1 ORDER BY order_date DESC',
+        'SELECT * FROM orders WHERE user_id = $1 ORDER BY created_at DESC',
         [userId]
     );
     const orders = ordersResult.rows;
@@ -85,16 +85,16 @@ const createOrder = async (req, res) => {
 
         // 2. Create the order
         const orderResult = await db.query(
-            'INSERT INTO orders (user_id, restaurant_id, total_amount, delivery_fee) VALUES ($1, $2, $3, $4) RETURNING *',
-            [userId, restaurant_id, total, delivery_fee]
+            'INSERT INTO orders (user_id, restaurant_id, total, status) VALUES ($1, $2, $3, $4) RETURNING *',
+            [userId, restaurant_id, total, 'pending']
         );
         const orderId = orderResult.rows[0].id;
 
         // 3. Add order items
         for (const item of items) {
             await db.query(
-                'INSERT INTO order_items (order_id, menu_item_id, quantity, unit_price, subtotal) VALUES ($1, $2, $3, $4, $5)',
-                [orderId, item.menu_item_id, item.quantity, item.price, item.price * item.quantity]
+                'INSERT INTO order_items (order_id, menu_item_id, quantity, unit_price) VALUES ($1, $2, $3, $4)',
+                [orderId, item.menu_item_id, item.quantity, item.price]
             );
         }
 

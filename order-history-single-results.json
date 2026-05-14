@@ -1,0 +1,57 @@
+{
+  "aggregate": {
+    "counters": {
+      "vusers.created_by_name.GET /api/orders/history": 1,
+      "vusers.created": 1,
+      "http.requests": 1,
+      "plugins.metrics-by-endpoint./api/orders/history.errors.ERR_SOCKET_TIMEOUT": 1,
+      "errors.ERR_SOCKET_TIMEOUT": 1,
+      "vusers.failed": 1
+    },
+    "rates": {
+      "http.request_rate": 1
+    },
+    "firstCounterAt": 1778736798746,
+    "lastCounterAt": 1778736806778,
+    "firstMetricAt": 1778736798746,
+    "lastMetricAt": 1778736806778,
+    "period": 1778736800000,
+    "summaries": {},
+    "histograms": {}
+  },
+  "intermediate": [
+    {
+      "counters": {
+        "vusers.created_by_name.GET /api/orders/history": 1,
+        "vusers.created": 1,
+        "http.requests": 1
+      },
+      "rates": {
+        "http.request_rate": 1
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1778736798746,
+      "lastCounterAt": 1778736798766,
+      "firstMetricAt": 1778736798746,
+      "lastMetricAt": 1778736798766,
+      "period": "1778736790000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "plugins.metrics-by-endpoint./api/orders/history.errors.ERR_SOCKET_TIMEOUT": 1,
+        "errors.ERR_SOCKET_TIMEOUT": 1,
+        "vusers.failed": 1
+      },
+      "rates": {},
+      "firstCounterAt": 1778736806778,
+      "lastCounterAt": 1778736806778,
+      "firstMetricAt": 1778736806778,
+      "lastMetricAt": 1778736806778,
+      "period": "1778736800000",
+      "summaries": {},
+      "histograms": {}
+    }
+  ]
+}

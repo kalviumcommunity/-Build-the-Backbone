@@ -1,0 +1,30 @@
+config:
+  target: "http://localhost:3000"
+  phases:
+    - duration: 30
+      arrivalRate: 1
+  defaults:
+    headers:
+      Content-Type: "application/json"
+
+scenarios:
+  - name: "GET /api/orders/history"
+    flow:
+      - get:
+          url: "/api/orders/history"
+          headers:
+            Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ1c2VyMUBleGFtcGxlLmluIiwiaWF0IjoxNzc4NzM2NDQ2LCJleHAiOjE3Nzg4MjI4NDZ9.Z3Qhu-c_XofV0MX75JVe2FEirsm2NTfp26gbsL14MGw"
+
+  - name: "POST /api/orders"
+    flow:
+      - post:
+          url: "/api/orders"
+          headers:
+            Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ1c2VyMUBleGFtcGxlLmluIiwiaWF0IjoxNzc4NzM2NDQ2LCJleHAiOjE3Nzg4MjI4NDZ9.Z3Qhu-c_XofV0MX75JVe2FEirsm2NTfp26gbsL14MGw"
+          json:
+            restaurant_id: 1
+            delivery_fee: 40.0
+            items:
+              - menu_item_id: 1
+                quantity: 2
+                price: 250.0
