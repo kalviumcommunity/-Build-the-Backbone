@@ -216,6 +216,18 @@ Execution Time: 0.252 ms
 
 ---
 
+## After Part A Benchmark
+
+Sampled against the fixed app with an authenticated test user. Read endpoints were hit 10 times each; `POST /api/orders` was sampled 5 times.
+
+| Endpoint                | After Part A P95 (ms) |
+| ----------------------- | --------------------- |
+| GET /api/restaurants    | 21.7                  |
+| GET /api/orders/history | 22.2                  |
+| POST /api/orders        | 774.1                 |
+
+---
+
 ## Test Results Files
 
 - `baseline-results.json` - Raw Artillery test results
