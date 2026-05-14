@@ -42,32 +42,27 @@ const getMenu = async (req, res) => {
 
     console.log(`[Restaurant Controller] Fetching menu for Restaurant #${id}`);
 
-    // Query 1: Get menu items
     const menuItemsResult = await db.query(
-        'SELECT * FROM menu_items WHERE restaurant_id = $1 AND is_available = TRUE',
+        `SELECT
+            mi.id,
+            mi.restaurant_id,
+            mi.category_id,
+            mi.name,
+            mi.description,
+            mi.price,
+            mi.available,
+            COALESCE(c.name, 'Uncategorized') AS category
+         FROM menu_items mi
+         LEFT JOIN categories c ON c.id = mi.category_id
+         WHERE mi.restaurant_id = $1
+           AND mi.available = TRUE
+         ORDER BY mi.id`,
         [id]
     );
-    const menuItems = menuItemsResult.rows;
-
-    const populatedMenu = [];
-
-    // // Attach category details to each item (N+1 query pattern)
-    // For each menu item, perform a separate query to fetch its category name.
-    for (const item of menuItems) {
-        const categoryResult = await db.query(
-            'SELECT * FROM categories WHERE id = $1',
-            [item.category_id]
-        );
-        
-        populatedMenu.push({
-            ...item,
-            category: categoryResult.rows[0] ? categoryResult.rows[0].name : 'Uncategorized'
-        });
-    }
 
     res.json({
         restaurant_id: id,
-        menu: populatedMenu
+        menu: menuItemsResult.rows
     });
 };
 

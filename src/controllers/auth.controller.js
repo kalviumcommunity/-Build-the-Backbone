@@ -15,11 +15,11 @@ const register = async (req, res) => {
             return res.status(400).json({ error: 'User already exists' });
         }
 
-        const password_hash = await bcrypt.hash(password, 12);
+        const passwordHash = await bcrypt.hash(password, 12);
         
         const result = await db.query(
-            'INSERT INTO users (name, email, password_hash, address) VALUES ($1, $2, $3, $4) RETURNING id, name, email',
-            [name, email, password_hash, address]
+            'INSERT INTO users (name, email, password, phone) VALUES ($1, $2, $3, $4) RETURNING id, name, email',
+            [name, email, passwordHash, address || null]
         );
 
         const token = jwt.sign(
@@ -51,7 +51,7 @@ const login = async (req, res) => {
         const result = await db.query('SELECT * FROM users WHERE email = $1', [email]);
         const user = result.rows[0];
 
-        if (!user || !(await bcrypt.compare(password, user.password_hash))) {
+        if (!user || !(await bcrypt.compare(password, user.password))) {
             return res.status(401).json({ error: 'Invalid credentials' });
         }
 

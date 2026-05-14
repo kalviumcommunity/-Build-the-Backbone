@@ -7,13 +7,40 @@ const authController = require('./controllers/auth.controller');
 const restaurantController = require('./controllers/restaurant.controller');
 const orderController = require('./controllers/order.controller');
 const authMiddleware = require('./middleware/auth.middleware');
+const db = require('./db');
 
 const app = express();
+
+// Store current request in async context
+let currentRequest = null;
 
 // Middleware
 app.use(express.json());
 app.use(cors());
 app.use(morgan('dev'));
+
+// Query counting middleware
+app.use((req, res, next) => {
+  req._queryCount = 0;
+  currentRequest = req;
+  
+  res.on('finish', () => {
+    if (req._queryCount > 5) {
+      console.log(
+        `[QUERY COUNT] ${req.method} ${req.path} → ${req._queryCount} queries`
+      );
+    }
+    currentRequest = null;
+  });
+  
+  next();
+});
+
+// Export for db to use
+app.getCurrentRequest = () => currentRequest;
+
+// Register app getter with db for query tracking
+db.setAppGetter(() => app);
 
 // Public Routes
 app.get('/api/health', restaurantController.getHealth);
