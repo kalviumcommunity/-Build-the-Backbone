@@ -7,7 +7,7 @@ const authController = require('./controllers/auth.controller');
 const restaurantController = require('./controllers/restaurant.controller');
 const orderController = require('./controllers/order.controller');
 const authMiddleware = require('./middleware/auth.middleware');
-const queryCountMiddleware = require('./middleware/queryCount.middleware');
+const { requestContextMiddleware } = require('./middleware/requestContext');
 
 const app = express();
 
@@ -15,18 +15,7 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 app.use(morgan('dev'));
-
-// Query tracking middleware - must be before routes
-app.use((req, res, next) => {
-  global._currentRequest = req;
-  res.on('finish', () => {
-    global._currentRequest = null;
-  });
-  next();
-});
-
-// Count database queries per request
-app.use(queryCountMiddleware);
+app.use(requestContextMiddleware);
 
 // Public Routes
 app.get('/api/health', restaurantController.getHealth);

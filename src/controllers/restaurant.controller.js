@@ -34,21 +34,21 @@ const getRestaurants = async (req, res) => {
 /**
  * Get Restaurant Menu items with category details.
  * 
- * [FIXED: N+1 Query Problem]
- * Replaced loop-based fetching with a single JOIN query.
- * Eliminated N database queries (one per menu item) and reduced to 1.
+ * FIXED: This function now uses a single JOIN query with json_agg
+ * instead of fetching items and then categories in a loop (N+1).
+ * Single query regardless of menu item count.
  */
 const getMenu = async (req, res) => {
     const { id } = req.params;
 
     console.log(`[Restaurant Controller] Fetching menu for Restaurant #${id}`);
 
-    // Single query with JOIN to categories - eliminates N+1
+    // Single query with category details aggregated in
+    // No separate queries needed for category lookups
     const result = await db.query(`
         SELECT
             mi.id,
             mi.restaurant_id,
-            mi.category_id,
             mi.name,
             mi.description,
             mi.price,
@@ -60,14 +60,13 @@ const getMenu = async (req, res) => {
         FROM menu_items mi
         LEFT JOIN categories c ON c.id = mi.category_id
         WHERE mi.restaurant_id = $1 AND mi.available = TRUE
-        ORDER BY mi.category_id, mi.name
+        ORDER BY mi.name
     `, [id]);
 
     const menuItems = result.rows;
 
     res.json({
         restaurant_id: id,
-        total_items: menuItems.length,
         menu: menuItems
     });
 };

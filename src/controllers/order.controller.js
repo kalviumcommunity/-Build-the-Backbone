@@ -4,32 +4,34 @@ const emailService = require('../lib/emailService');
 /**
  * Get Order History for the authenticated user.
  * 
- * [FIXED: N+1 Query Problem]
- * Replaced loop-based fetching with a single JOIN query using json_agg.
- * This eliminates 100+ database round trips and reduces latency by 98%.
+ * FIXED: This function now uses a single JOIN query with json_agg
+ * instead of the N+1 pattern. This reduces 1 + N + N*M queries
+ * down to a single query, regardless of order count.
  */
 const getOrderHistory = async (req, res) => {
     const userId = req.user.id;
-    const limit = req.query.limit || 20;
-    const offset = req.query.offset || 0;
+    const limit = parseInt(req.query.limit) || 20;
+    const offset = parseInt(req.query.offset) || 0;
 
     console.log(`[Order Controller] Fetching history for User #${userId}`);
 
-    // Single query with json_agg: fetch orders with all nested items and menu details
+    // Single query with json_agg aggregation
+    // This combines orders, order_items, and menu_items into nested JSON
+    // in a single database round-trip.
     const result = await db.query(`
         SELECT
             o.id,
-            o.user_id,
             o.restaurant_id,
             o.total,
             o.status,
             o.created_at,
             json_agg(
                 json_build_object(
-                    'itemId', oi.id,
+                    'id', oi.id,
                     'menuItemId', oi.menu_item_id,
                     'quantity', oi.quantity,
                     'unitPrice', oi.unit_price,
+                    'subtotal', (oi.unit_price * oi.quantity),
                     'menuItem', json_build_object(
                         'id', mi.id,
                         'name', mi.name,
@@ -42,16 +44,12 @@ const getOrderHistory = async (req, res) => {
         LEFT JOIN order_items oi ON oi.order_id = o.id
         LEFT JOIN menu_items mi ON mi.id = oi.menu_item_id
         WHERE o.user_id = $1
-        GROUP BY o.id, o.user_id, o.restaurant_id, o.total, o.status, o.created_at
+        GROUP BY o.id
         ORDER BY o.created_at DESC
         LIMIT $2 OFFSET $3
     `, [userId, limit, offset]);
 
-    const orders = result.rows.map(row => ({
-        ...row,
-        // Filter out null items (from LEFT JOIN when no items exist)
-        items: row.items.filter(item => item.menuItemId !== null)
-    }));
+    const orders = result.rows;
 
     res.json({
         user_id: userId,
