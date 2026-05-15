@@ -1,4 +1,6 @@
 const db = require('../db');
+const redis = require('../lib/redis');
+const { invalidateRestaurantCache } = require('../lib/cacheInvalidation');
 
 /**
  * Get List of Restaurants with filters.
@@ -7,29 +9,69 @@ const db = require('../db');
  * Missing indexes on WHERE and JOIN columns in the database.
  * This query will scan the full table even with a simple city filter.
  */
-const getRestaurants = async (req, res) => {
-    const { city, limit = 20, offset = 0 } = req.query;
+const listRestaurants = async (req, res) => {
+    const { city } = req.query;
+    const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
+    const limit = Math.max(parseInt(req.query.limit, 10) || 20, 1);
+    const sort = req.query.sort || 'rating';
+    const offset = (page - 1) * limit;
+
+    // Cache key must be deterministic and include all pagination params.
+    const key = `restaurants:city=${city || 'all'}:page=${page}:limit=${limit}:sort=${sort}`;
+
+    try {
+        const cached = await redis.get(key);
+        if (cached) {
+            res.set('X-Cache', 'HIT');
+            return res.json(JSON.parse(cached));
+        }
+    } catch (err) {
+        console.error('[Redis] get error:', err.message);
+        // fallthrough to DB query on Redis errors
+    }
 
     let queryStr = 'SELECT * FROM restaurants';
     const params = [];
 
+    // Whitelist sortable columns to avoid SQL injection via ORDER BY.
+    const sortMap = {
+        rating: 'id',
+        name: 'name',
+        city: 'city',
+        created_at: 'created_at'
+    };
+    const sortColumn = sortMap[sort] || 'id';
+
     if (city) {
         queryStr += ' WHERE city = $1';
         params.push(city);
-        queryStr += ` LIMIT $2 OFFSET $3`;
+        queryStr += ` ORDER BY ${sortColumn} LIMIT $2 OFFSET $3`;
         params.push(limit, offset);
     } else {
-        queryStr += ` LIMIT $1 OFFSET $2`;
+        queryStr += ` ORDER BY ${sortColumn} LIMIT $1 OFFSET $2`;
         params.push(limit, offset);
     }
 
     const result = await db.query(queryStr, params);
 
-    res.json({
+    const payload = {
         total: result.rowCount,
         restaurants: result.rows
-    });
+    };
+
+    try {
+        // Cache for 5 minutes
+        await redis.setex(key, 300, JSON.stringify(payload));
+    } catch (err) {
+        console.error('[Redis] setex error:', err.message);
+    }
+
+    res.set('X-Cache', 'MISS');
+    res.json(payload);
 };
+
+// Backward-compatible alias used by existing route wiring.
+const getRestaurants = listRestaurants;
 
 /**
  * Get Restaurant Menu items with category details.
@@ -42,32 +84,27 @@ const getMenu = async (req, res) => {
 
     console.log(`[Restaurant Controller] Fetching menu for Restaurant #${id}`);
 
-    // Query 1: Get menu items
     const menuItemsResult = await db.query(
-        'SELECT * FROM menu_items WHERE restaurant_id = $1 AND is_available = TRUE',
+        `SELECT
+            mi.id,
+            mi.restaurant_id,
+            mi.category_id,
+            mi.name,
+            mi.description,
+            mi.price,
+            mi.available,
+            COALESCE(c.name, 'Uncategorized') AS category
+         FROM menu_items mi
+         LEFT JOIN categories c ON c.id = mi.category_id
+         WHERE mi.restaurant_id = $1
+           AND mi.available = TRUE
+         ORDER BY mi.id`,
         [id]
     );
-    const menuItems = menuItemsResult.rows;
-
-    const populatedMenu = [];
-
-    // // Attach category details to each item (N+1 query pattern)
-    // For each menu item, perform a separate query to fetch its category name.
-    for (const item of menuItems) {
-        const categoryResult = await db.query(
-            'SELECT * FROM categories WHERE id = $1',
-            [item.category_id]
-        );
-        
-        populatedMenu.push({
-            ...item,
-            category: categoryResult.rows[0] ? categoryResult.rows[0].name : 'Uncategorized'
-        });
-    }
 
     res.json({
         restaurant_id: id,
-        menu: populatedMenu
+        menu: menuItemsResult.rows
     });
 };
 
@@ -80,8 +117,81 @@ const getHealth = async (req, res) => {
     }
 };
 
+const createRestaurant = async (req, res) => {
+    const { name, city, cuisine_type = null, description = null, active = true } = req.body;
+
+    const result = await db.query(
+        `INSERT INTO restaurants (name, city, cuisine_type, description, active)
+         VALUES ($1, $2, $3, $4, $5)
+         RETURNING *`,
+        [name, city, cuisine_type, description, active]
+    );
+
+    await invalidateRestaurantCache(result.rows[0].city);
+    res.status(201).json(result.rows[0]);
+};
+
+const updateRestaurant = async (req, res) => {
+    const { id } = req.params;
+    const { name, city, cuisine_type = null, description = null, active = true } = req.body;
+
+    const currentResult = await db.query(
+        'SELECT city FROM restaurants WHERE id = $1',
+        [id]
+    );
+
+    if (currentResult.rowCount === 0) {
+        return res.status(404).json({ error: 'Restaurant not found' });
+    }
+
+    const previousCity = currentResult.rows[0].city;
+
+    const result = await db.query(
+        `UPDATE restaurants
+         SET name = $1,
+             city = $2,
+             cuisine_type = $3,
+             description = $4,
+             active = $5
+         WHERE id = $6
+         RETURNING *`,
+        [name, city, cuisine_type, description, active, id]
+    );
+
+    if (result.rowCount === 0) {
+        return res.status(404).json({ error: 'Restaurant not found' });
+    }
+
+    await invalidateRestaurantCache(previousCity);
+    if (result.rows[0].city !== previousCity) {
+        await invalidateRestaurantCache(result.rows[0].city);
+    }
+
+    res.json(result.rows[0]);
+};
+
+const deleteRestaurant = async (req, res) => {
+    const { id } = req.params;
+
+    const result = await db.query(
+        'DELETE FROM restaurants WHERE id = $1 RETURNING city',
+        [id]
+    );
+
+    if (result.rowCount === 0) {
+        return res.status(404).json({ error: 'Restaurant not found' });
+    }
+
+    await invalidateRestaurantCache(result.rows[0].city);
+    res.status(204).send();
+};
+
 module.exports = {
+    listRestaurants,
     getRestaurants,
     getMenu,
-    getHealth
+    getHealth,
+    createRestaurant,
+    updateRestaurant,
+    deleteRestaurant
 };
