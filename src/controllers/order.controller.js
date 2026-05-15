@@ -142,6 +142,7 @@ const getOrderById = async (req, res) => {
 };
 
 module.exports = {
+    create: createOrder,
     getOrderHistory,
     createOrder,
     getOrderById
