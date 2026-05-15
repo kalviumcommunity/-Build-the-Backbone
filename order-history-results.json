@@ -1,0 +1,120 @@
+{
+  "aggregate": {
+    "counters": {
+      "vusers.created_by_name.GET /api/orders/history": 30,
+      "vusers.created": 30,
+      "http.requests": 30,
+      "plugins.metrics-by-endpoint./api/orders/history.errors.ERR_SOCKET_TIMEOUT": 30,
+      "errors.ERR_SOCKET_TIMEOUT": 30,
+      "vusers.failed": 30
+    },
+    "rates": {
+      "http.request_rate": 1
+    },
+    "firstCounterAt": 1778736735519,
+    "lastCounterAt": 1778736772535,
+    "firstMetricAt": 1778736735519,
+    "lastMetricAt": 1778736772535,
+    "period": 1778736770000,
+    "summaries": {},
+    "histograms": {}
+  },
+  "intermediate": [
+    {
+      "counters": {
+        "vusers.created_by_name.GET /api/orders/history": 5,
+        "vusers.created": 5,
+        "http.requests": 5
+      },
+      "rates": {
+        "http.request_rate": 1
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1778736735519,
+      "lastCounterAt": 1778736739519,
+      "firstMetricAt": 1778736735519,
+      "lastMetricAt": 1778736739519,
+      "period": "1778736730000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.GET /api/orders/history": 10,
+        "vusers.created": 10,
+        "http.requests": 10,
+        "plugins.metrics-by-endpoint./api/orders/history.errors.ERR_SOCKET_TIMEOUT": 7,
+        "errors.ERR_SOCKET_TIMEOUT": 7,
+        "vusers.failed": 7
+      },
+      "rates": {
+        "http.request_rate": 1
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1778736740518,
+      "lastCounterAt": 1778736749520,
+      "firstMetricAt": 1778736740518,
+      "lastMetricAt": 1778736749520,
+      "period": "1778736740000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.GET /api/orders/history": 10,
+        "vusers.created": 10,
+        "http.requests": 10,
+        "plugins.metrics-by-endpoint./api/orders/history.errors.ERR_SOCKET_TIMEOUT": 10,
+        "errors.ERR_SOCKET_TIMEOUT": 10,
+        "vusers.failed": 10
+      },
+      "rates": {
+        "http.request_rate": 1
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1778736750518,
+      "lastCounterAt": 1778736759520,
+      "firstMetricAt": 1778736750518,
+      "lastMetricAt": 1778736759520,
+      "period": "1778736750000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.GET /api/orders/history": 5,
+        "vusers.created": 5,
+        "http.requests": 5,
+        "plugins.metrics-by-endpoint./api/orders/history.errors.ERR_SOCKET_TIMEOUT": 10,
+        "errors.ERR_SOCKET_TIMEOUT": 10,
+        "vusers.failed": 10
+      },
+      "rates": {
+        "http.request_rate": 1
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1778736760518,
+      "lastCounterAt": 1778736769532,
+      "firstMetricAt": 1778736760518,
+      "lastMetricAt": 1778736769532,
+      "period": "1778736760000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "plugins.metrics-by-endpoint./api/orders/history.errors.ERR_SOCKET_TIMEOUT": 3,
+        "errors.ERR_SOCKET_TIMEOUT": 3,
+        "vusers.failed": 3
+      },
+      "rates": {},
+      "firstCounterAt": 1778736770537,
+      "lastCounterAt": 1778736772535,
+      "firstMetricAt": 1778736770537,
+      "lastMetricAt": 1778736772535,
+      "period": "1778736770000",
+      "summaries": {},
+      "histograms": {}
+    }
+  ]
+}

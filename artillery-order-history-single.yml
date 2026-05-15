@@ -1,0 +1,18 @@
+config:
+  target: "http://localhost:3000"
+  http:
+    timeout: 120000
+  phases:
+    - duration: 1
+      arrivalRate: 1
+  defaults:
+    headers:
+      Content-Type: "application/json"
+
+scenarios:
+  - name: "GET /api/orders/history"
+    flow:
+      - get:
+          url: "/api/orders/history"
+          headers:
+            Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ1c2VyMUBleGFtcGxlLmluIiwiaWF0IjoxNzc4NzM2NDQ2LCJleHAiOjE3Nzg4MjI4NDZ9.Z3Qhu-c_XofV0MX75JVe2FEirsm2NTfp26gbsL14MGw"

@@ -1,61 +1,72 @@
 const db = require('../db');
-const emailService = require('../lib/emailService');
+const emailQueue = require('../queues/email.queue');
 
 /**
  * Get Order History for the authenticated user.
  * 
- * [PLANTED PERFORMANCE PROBLEM 1]
- * This function exhibits a severe N+1 query problem. Instead of a single JOIN,
- * it fetches orders, then items, then menu details in a nested loop.
- * Performance will degrade exponentially as orders increase.
+ * [STEP 5 FIX]
+ * Replaced N+1 loop pattern with efficient single JOIN query using json_agg.
+ * Before: 1 + N + (N*M) queries (orders → items → menu_items)
+ * After: 1 query (JOIN with aggregation)
  */
 const getOrderHistory = async (req, res) => {
     const userId = req.user.id;
 
     console.log(`[Order Controller] Fetching history for User #${userId}`);
 
-    // Query 1: Get all orders for this user
-    const ordersResult = await db.query(
-        'SELECT * FROM orders WHERE user_id = $1 ORDER BY order_date DESC',
-        [userId]
-    );
-    const orders = ordersResult.rows;
+    // Single JOIN query with json_agg aggregation
+    // Replaces: Query 1 (orders) + N queries (items) + N*M queries (menu details)
+    const result = await db.query(`
+        SELECT
+            o.id,
+            o.user_id,
+            o.restaurant_id,
+            o.total,
+            o.status,
+            o.created_at,
+            COALESCE(
+                json_agg(
+                    json_build_object(
+                        'id', oi.id,
+                        'order_id', oi.order_id,
+                        'menu_item_id', oi.menu_item_id,
+                        'quantity', oi.quantity,
+                        'unit_price', oi.unit_price,
+                        'menu_item', json_build_object(
+                            'id', mi.id,
+                            'name', mi.name,
+                            'description', mi.description,
+                            'price', mi.price,
+                            'category_id', mi.category_id,
+                            'restaurant_id', mi.restaurant_id
+                        )
+                    )
+                ) FILTER (WHERE oi.id IS NOT NULL),
+                '[]'::json
+            ) AS items
+        FROM orders o
+        LEFT JOIN order_items oi ON oi.order_id = o.id
+        LEFT JOIN menu_items mi ON mi.id = oi.menu_item_id
+        WHERE o.user_id = $1
+        GROUP BY o.id
+        ORDER BY o.created_at DESC
+        LIMIT 20
+    `, [userId]);
 
-    // // Get full order details for each order (N+1 query pattern)
-    // For each order, we fetch the items, then for each item, the menu item details.
-    const fullOrders = [];
-    
-    for (const order of orders) {
-        // Query 1+N: Get items for this order
-        const itemsResult = await db.query(
-            'SELECT * FROM order_items WHERE order_id = $1',
-            [order.id]
-        );
-        const items = itemsResult.rows;
-        
-        const detailedItems = [];
-        for (const item of items) {
-            // Query 1+N+M: Get menu details for this item
-            const menuResult = await db.query(
-                'SELECT * FROM menu_items WHERE id = $1',
-                [item.menu_item_id]
-            );
-            detailedItems.push({
-                ...item,
-                menu_item: menuResult.rows[0]
-            });
-        }
-        
-        fullOrders.push({
-            ...order,
-            items: detailedItems
-        });
-    }
+    const orders = result.rows.map(row => ({
+        id: row.id,
+        user_id: row.user_id,
+        restaurant_id: row.restaurant_id,
+        total: row.total,
+        status: row.status,
+        created_at: row.created_at,
+        items: row.items
+    }));
 
     res.json({
         user_id: userId,
         total_orders: orders.length,
-        orders: fullOrders
+        orders
     });
 };
 
@@ -85,22 +96,31 @@ const createOrder = async (req, res) => {
 
         // 2. Create the order
         const orderResult = await db.query(
-            'INSERT INTO orders (user_id, restaurant_id, total_amount, delivery_fee) VALUES ($1, $2, $3, $4) RETURNING *',
-            [userId, restaurant_id, total, delivery_fee]
+            'INSERT INTO orders (user_id, restaurant_id, total, status) VALUES ($1, $2, $3, $4) RETURNING *',
+            [userId, restaurant_id, total, 'pending']
         );
         const orderId = orderResult.rows[0].id;
 
         // 3. Add order items
         for (const item of items) {
             await db.query(
-                'INSERT INTO order_items (order_id, menu_item_id, quantity, unit_price, subtotal) VALUES ($1, $2, $3, $4, $5)',
-                [orderId, item.menu_item_id, item.quantity, item.price, item.price * item.quantity]
+                'INSERT INTO order_items (order_id, menu_item_id, quantity, unit_price) VALUES ($1, $2, $3, $4)',
+                [orderId, item.menu_item_id, item.quantity, item.price]
             );
         }
 
-        // // Send confirmation email before responding
-        // [PLANTED PROBLEM]: This will block for 300-800ms
-        await emailService.sendConfirmation(orderId, req.user.email);
+        await emailQueue.add('send-confirmation', {
+            orderId,
+            userEmail: req.user.email,
+            orderData: {
+                id: orderId,
+                user_id: userId,
+                restaurant_id,
+                total,
+                status: 'pending',
+                items
+            }
+        });
 
         res.status(201).json({
             message: 'Order created successfully!',

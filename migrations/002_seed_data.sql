@@ -13,7 +13,7 @@ SELECT
         ELSE 'Sonia Deshmukh'
     END || ' ' || i,
     'user' || i || '@example.in',
-    '$2a$12$R9h/lIPzHZ7.3m8.6u8/G.8.m.h.P.f.X.P.P.P.P.P.P.P.P.P.P', -- 'password123'
+    '$2a$12$LNKT1ACN226k.7uOTCfBo.0Vur2GYUhpmYc8EQEc/DNMh8GldC3e.', -- 'password123'
     '98' || LPAD(i::text, 8, '0')
 FROM generate_series(1, 1000) AS i;
 
