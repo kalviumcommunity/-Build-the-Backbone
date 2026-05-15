@@ -1,4 +1,15 @@
 const db = require('../db');
+const redis = require('../lib/redis');
+
+const CACHE_TTL = 300;
+
+const buildCacheKey = (query) => {
+    const city = query.city || 'all';
+    const limit = parseInt(query.limit, 10) || 20;
+    const offset = parseInt(query.offset, 10) || 0;
+
+    return `restaurants:city=${city}:limit=${limit}:offset=${offset}`;
+};
 
 /**
  * Get List of Restaurants with filters.
@@ -8,27 +19,50 @@ const db = require('../db');
  * This query will scan the full table even with a simple city filter.
  */
 const getRestaurants = async (req, res) => {
+    const cacheKey = buildCacheKey(req.query);
     const { city, limit = 20, offset = 0 } = req.query;
 
-    let queryStr = 'SELECT * FROM restaurants';
-    const params = [];
+    try {
+        try {
+            const cached = await redis.get(cacheKey);
+            if (cached) {
+                res.set('X-Cache', 'HIT');
+                return res.json(JSON.parse(cached));
+            }
+        } catch (cacheErr) {
+            console.error('[Cache] Read failed, falling back to DB:', cacheErr.message);
+        }
 
-    if (city) {
-        queryStr += ' WHERE city = $1';
-        params.push(city);
-        queryStr += ` LIMIT $2 OFFSET $3`;
-        params.push(limit, offset);
-    } else {
-        queryStr += ` LIMIT $1 OFFSET $2`;
-        params.push(limit, offset);
+        let queryStr = 'SELECT * FROM restaurants';
+        const params = [];
+
+        if (city) {
+            queryStr += ' WHERE city = $1';
+            params.push(city);
+            queryStr += ' LIMIT $2 OFFSET $3';
+            params.push(limit, offset);
+        } else {
+            queryStr += ' LIMIT $1 OFFSET $2';
+            params.push(limit, offset);
+        }
+
+        const result = await db.query(queryStr, params);
+        const data = {
+            total: result.rowCount,
+            restaurants: result.rows
+        };
+
+        try {
+            await redis.setex(cacheKey, CACHE_TTL, JSON.stringify(data));
+        } catch (cacheErr) {
+            console.error('[Cache] Write failed (non-fatal):', cacheErr.message);
+        }
+
+        res.set('X-Cache', 'MISS');
+        return res.json(data);
+    } catch (err) {
+        return res.status(500).json({ error: 'Failed to fetch restaurants' });
     }
-
-    const result = await db.query(queryStr, params);
-
-    res.json({
-        total: result.rowCount,
-        restaurants: result.rows
-    });
 };
 
 /**
@@ -83,5 +117,6 @@ const getHealth = async (req, res) => {
 module.exports = {
     getRestaurants,
     getMenu,
-    getHealth
+    getHealth,
+    buildCacheKey
 };

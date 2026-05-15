@@ -18,6 +18,12 @@ const sendConfirmation = async (orderId, userEmail) => {
     return true;
 };
 
+const sendOrderConfirmation = async ({ to, subject, order }) => {
+    const orderId = order?.id || order?.order_id || 'unknown';
+    return sendConfirmation(orderId, to || order?.userEmail || 'unknown');
+};
+
 module.exports = {
-    sendConfirmation
+    sendConfirmation,
+    sendOrderConfirmation
 };

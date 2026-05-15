@@ -29,7 +29,9 @@
     "express-async-errors": "^3.1.1",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
-    "pg": "^8.11.3"
+    "pg": "^8.11.3",
+    "bullmq": "^5.35.0",
+    "ioredis": "^5.4.1"
   },
   "devDependencies": {
     "artillery": "^2.0.0-39",
