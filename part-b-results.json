@@ -1,0 +1,665 @@
+{
+  "aggregate": {
+    "counters": {
+      "vusers.created_by_name.0": 600,
+      "vusers.created": 600,
+      "http.requests": 784,
+      "http.codes.200": 184,
+      "http.responses": 184,
+      "http.downloaded_bytes": 728072,
+      "plugins.metrics-by-endpoint./api/restaurants.codes.200": 183,
+      "plugins.metrics-by-endpoint./api/auth/login.codes.200": 1,
+      "plugins.metrics-by-endpoint./api/auth/login.errors.ERR_SOCKET_TIMEOUT": 182,
+      "errors.ERR_SOCKET_TIMEOUT": 522,
+      "vusers.failed": 600,
+      "plugins.metrics-by-endpoint./api/orders/history.errors.ERR_SOCKET_TIMEOUT": 1,
+      "plugins.metrics-by-endpoint./api/restaurants.errors.ERR_SOCKET_TIMEOUT": 339,
+      "plugins.metrics-by-endpoint./api/restaurants.errors.ECONNREFUSED": 78,
+      "errors.ECONNREFUSED": 78
+    },
+    "rates": {
+      "http.request_rate": 13
+    },
+    "firstCounterAt": 1778819776864,
+    "firstHistogramAt": 1778819777989,
+    "lastCounterAt": 1778819837558,
+    "lastHistogramAt": 1778819804955,
+    "firstMetricAt": 1778819776864,
+    "lastMetricAt": 1778819837558,
+    "period": 1778819830000,
+    "summaries": {
+      "http.response_time": {
+        "min": 7,
+        "max": 7977,
+        "count": 184,
+        "mean": 4727.8,
+        "p50": 4965.3,
+        "median": 4965.3,
+        "p75": 6312.2,
+        "p90": 7117,
+        "p95": 7557.1,
+        "p99": 7865.6,
+        "p999": 7865.6
+      },
+      "http.response_time.2xx": {
+        "min": 7,
+        "max": 7977,
+        "count": 184,
+        "mean": 4727.8,
+        "p50": 4965.3,
+        "median": 4965.3,
+        "p75": 6312.2,
+        "p90": 7117,
+        "p95": 7557.1,
+        "p99": 7865.6,
+        "p999": 7865.6
+      },
+      "plugins.metrics-by-endpoint.response_time./api/restaurants": {
+        "min": 7,
+        "max": 7977,
+        "count": 183,
+        "mean": 4730.4,
+        "p50": 5065.6,
+        "median": 5065.6,
+        "p75": 6312.2,
+        "p90": 7117,
+        "p95": 7557.1,
+        "p99": 7865.6,
+        "p999": 7865.6
+      },
+      "plugins.metrics-by-endpoint.response_time./api/auth/login": {
+        "min": 4265,
+        "max": 4265,
+        "count": 1,
+        "mean": 4265,
+        "p50": 4231.1,
+        "median": 4231.1,
+        "p75": 4231.1,
+        "p90": 4231.1,
+        "p95": 4231.1,
+        "p99": 4231.1,
+        "p999": 4231.1
+      }
+    },
+    "histograms": {
+      "http.response_time": {
+        "min": 7,
+        "max": 7977,
+        "count": 184,
+        "mean": 4727.8,
+        "p50": 4965.3,
+        "median": 4965.3,
+        "p75": 6312.2,
+        "p90": 7117,
+        "p95": 7557.1,
+        "p99": 7865.6,
+        "p999": 7865.6
+      },
+      "http.response_time.2xx": {
+        "min": 7,
+        "max": 7977,
+        "count": 184,
+        "mean": 4727.8,
+        "p50": 4965.3,
+        "median": 4965.3,
+        "p75": 6312.2,
+        "p90": 7117,
+        "p95": 7557.1,
+        "p99": 7865.6,
+        "p999": 7865.6
+      },
+      "plugins.metrics-by-endpoint.response_time./api/restaurants": {
+        "min": 7,
+        "max": 7977,
+        "count": 183,
+        "mean": 4730.4,
+        "p50": 5065.6,
+        "median": 5065.6,
+        "p75": 6312.2,
+        "p90": 7117,
+        "p95": 7557.1,
+        "p99": 7865.6,
+        "p999": 7865.6
+      },
+      "plugins.metrics-by-endpoint.response_time./api/auth/login": {
+        "min": 4265,
+        "max": 4265,
+        "count": 1,
+        "mean": 4265,
+        "p50": 4231.1,
+        "median": 4231.1,
+        "p75": 4231.1,
+        "p90": 4231.1,
+        "p95": 4231.1,
+        "p99": 4231.1,
+        "p999": 4231.1
+      }
+    }
+  },
+  "intermediate": [
+    {
+      "counters": {
+        "vusers.created_by_name.0": 33,
+        "vusers.created": 33,
+        "http.requests": 51,
+        "http.codes.200": 18,
+        "http.responses": 18,
+        "http.downloaded_bytes": 71586,
+        "plugins.metrics-by-endpoint./api/restaurants.codes.200": 18
+      },
+      "rates": {
+        "http.request_rate": 20
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1778819776864,
+      "firstHistogramAt": 1778819777989,
+      "lastCounterAt": 1778819779985,
+      "lastHistogramAt": 1778819779878,
+      "firstMetricAt": 1778819776864,
+      "lastMetricAt": 1778819779985,
+      "period": "1778819770000",
+      "summaries": {
+        "http.response_time": {
+          "min": 7,
+          "max": 2371,
+          "count": 18,
+          "mean": 1181.5,
+          "p50": 1130.2,
+          "median": 1130.2,
+          "p75": 1353.1,
+          "p90": 2276.1,
+          "p95": 2322.1,
+          "p99": 2322.1,
+          "p999": 2322.1
+        },
+        "http.response_time.2xx": {
+          "min": 7,
+          "max": 2371,
+          "count": 18,
+          "mean": 1181.5,
+          "p50": 1130.2,
+          "median": 1130.2,
+          "p75": 1353.1,
+          "p90": 2276.1,
+          "p95": 2322.1,
+          "p99": 2322.1,
+          "p999": 2322.1
+        },
+        "plugins.metrics-by-endpoint.response_time./api/restaurants": {
+          "min": 7,
+          "max": 2371,
+          "count": 18,
+          "mean": 1181.5,
+          "p50": 1130.2,
+          "median": 1130.2,
+          "p75": 1353.1,
+          "p90": 2276.1,
+          "p95": 2322.1,
+          "p99": 2322.1,
+          "p999": 2322.1
+        }
+      },
+      "histograms": {
+        "http.response_time": {
+          "min": 7,
+          "max": 2371,
+          "count": 18,
+          "mean": 1181.5,
+          "p50": 1130.2,
+          "median": 1130.2,
+          "p75": 1353.1,
+          "p90": 2276.1,
+          "p95": 2322.1,
+          "p99": 2322.1,
+          "p999": 2322.1
+        },
+        "http.response_time.2xx": {
+          "min": 7,
+          "max": 2371,
+          "count": 18,
+          "mean": 1181.5,
+          "p50": 1130.2,
+          "median": 1130.2,
+          "p75": 1353.1,
+          "p90": 2276.1,
+          "p95": 2322.1,
+          "p99": 2322.1,
+          "p999": 2322.1
+        },
+        "plugins.metrics-by-endpoint.response_time./api/restaurants": {
+          "min": 7,
+          "max": 2371,
+          "count": 18,
+          "mean": 1181.5,
+          "p50": 1130.2,
+          "median": 1130.2,
+          "p75": 1353.1,
+          "p90": 2276.1,
+          "p95": 2322.1,
+          "p99": 2322.1,
+          "p999": 2322.1
+        }
+      }
+    },
+    {
+      "counters": {
+        "http.codes.200": 54,
+        "http.responses": 54,
+        "http.downloaded_bytes": 211062,
+        "plugins.metrics-by-endpoint./api/restaurants.codes.200": 53,
+        "http.requests": 154,
+        "vusers.created_by_name.0": 100,
+        "vusers.created": 100,
+        "plugins.metrics-by-endpoint./api/restaurants.errors.ERR_SOCKET_TIMEOUT": 3,
+        "errors.ERR_SOCKET_TIMEOUT": 35,
+        "vusers.failed": 35,
+        "plugins.metrics-by-endpoint./api/auth/login.errors.ERR_SOCKET_TIMEOUT": 32,
+        "plugins.metrics-by-endpoint./api/auth/login.codes.200": 1
+      },
+      "rates": {
+        "http.request_rate": 17
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1778819780366,
+      "firstHistogramAt": 1778819780490,
+      "lastCounterAt": 1778819789978,
+      "lastHistogramAt": 1778819787425,
+      "firstMetricAt": 1778819780366,
+      "lastMetricAt": 1778819789978,
+      "period": "1778819780000",
+      "summaries": {
+        "http.response_time": {
+          "min": 780,
+          "max": 5714,
+          "count": 54,
+          "mean": 3326.2,
+          "p50": 3605.5,
+          "median": 3605.5,
+          "p75": 4403.8,
+          "p90": 5272.4,
+          "p95": 5598.4,
+          "p99": 5711.5,
+          "p999": 5711.5
+        },
+        "http.response_time.2xx": {
+          "min": 780,
+          "max": 5714,
+          "count": 54,
+          "mean": 3326.2,
+          "p50": 3605.5,
+          "median": 3605.5,
+          "p75": 4403.8,
+          "p90": 5272.4,
+          "p95": 5598.4,
+          "p99": 5711.5,
+          "p999": 5711.5
+        },
+        "plugins.metrics-by-endpoint.response_time./api/restaurants": {
+          "min": 780,
+          "max": 5714,
+          "count": 53,
+          "mean": 3308.5,
+          "p50": 3605.5,
+          "median": 3605.5,
+          "p75": 4583.6,
+          "p90": 5272.4,
+          "p95": 5598.4,
+          "p99": 5711.5,
+          "p999": 5711.5
+        },
+        "plugins.metrics-by-endpoint.response_time./api/auth/login": {
+          "min": 4265,
+          "max": 4265,
+          "count": 1,
+          "mean": 4265,
+          "p50": 4231.1,
+          "median": 4231.1,
+          "p75": 4231.1,
+          "p90": 4231.1,
+          "p95": 4231.1,
+          "p99": 4231.1,
+          "p999": 4231.1
+        }
+      },
+      "histograms": {
+        "http.response_time": {
+          "min": 780,
+          "max": 5714,
+          "count": 54,
+          "mean": 3326.2,
+          "p50": 3605.5,
+          "median": 3605.5,
+          "p75": 4403.8,
+          "p90": 5272.4,
+          "p95": 5598.4,
+          "p99": 5711.5,
+          "p999": 5711.5
+        },
+        "http.response_time.2xx": {
+          "min": 780,
+          "max": 5714,
+          "count": 54,
+          "mean": 3326.2,
+          "p50": 3605.5,
+          "median": 3605.5,
+          "p75": 4403.8,
+          "p90": 5272.4,
+          "p95": 5598.4,
+          "p99": 5711.5,
+          "p999": 5711.5
+        },
+        "plugins.metrics-by-endpoint.response_time./api/restaurants": {
+          "min": 780,
+          "max": 5714,
+          "count": 53,
+          "mean": 3308.5,
+          "p50": 3605.5,
+          "median": 3605.5,
+          "p75": 4583.6,
+          "p90": 5272.4,
+          "p95": 5598.4,
+          "p99": 5711.5,
+          "p999": 5711.5
+        },
+        "plugins.metrics-by-endpoint.response_time./api/auth/login": {
+          "min": 4265,
+          "max": 4265,
+          "count": 1,
+          "mean": 4265,
+          "p50": 4231.1,
+          "median": 4231.1,
+          "p75": 4231.1,
+          "p90": 4231.1,
+          "p95": 4231.1,
+          "p99": 4231.1,
+          "p999": 4231.1
+        }
+      }
+    },
+    {
+      "counters": {
+        "http.codes.200": 90,
+        "http.responses": 90,
+        "http.downloaded_bytes": 357930,
+        "plugins.metrics-by-endpoint./api/restaurants.codes.200": 90,
+        "http.requests": 190,
+        "vusers.created_by_name.0": 100,
+        "vusers.created": 100,
+        "plugins.metrics-by-endpoint./api/auth/login.errors.ERR_SOCKET_TIMEOUT": 67,
+        "errors.ERR_SOCKET_TIMEOUT": 81,
+        "vusers.failed": 81,
+        "plugins.metrics-by-endpoint./api/restaurants.errors.ERR_SOCKET_TIMEOUT": 13,
+        "plugins.metrics-by-endpoint./api/orders/history.errors.ERR_SOCKET_TIMEOUT": 1
+      },
+      "rates": {
+        "http.request_rate": 20
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1778819790281,
+      "firstHistogramAt": 1778819790524,
+      "lastCounterAt": 1778819799978,
+      "lastHistogramAt": 1778819799354,
+      "firstMetricAt": 1778819790281,
+      "lastMetricAt": 1778819799978,
+      "period": "1778819790000",
+      "summaries": {
+        "http.response_time": {
+          "min": 3690,
+          "max": 7823,
+          "count": 90,
+          "mean": 5751.1,
+          "p50": 5711.5,
+          "median": 5711.5,
+          "p75": 6569.8,
+          "p90": 7260.8,
+          "p95": 7557.1,
+          "p99": 7709.8,
+          "p999": 7709.8
+        },
+        "http.response_time.2xx": {
+          "min": 3690,
+          "max": 7823,
+          "count": 90,
+          "mean": 5751.1,
+          "p50": 5711.5,
+          "median": 5711.5,
+          "p75": 6569.8,
+          "p90": 7260.8,
+          "p95": 7557.1,
+          "p99": 7709.8,
+          "p999": 7709.8
+        },
+        "plugins.metrics-by-endpoint.response_time./api/restaurants": {
+          "min": 3690,
+          "max": 7823,
+          "count": 90,
+          "mean": 5751.1,
+          "p50": 5711.5,
+          "median": 5711.5,
+          "p75": 6569.8,
+          "p90": 7260.8,
+          "p95": 7557.1,
+          "p99": 7709.8,
+          "p999": 7709.8
+        }
+      },
+      "histograms": {
+        "http.response_time": {
+          "min": 3690,
+          "max": 7823,
+          "count": 90,
+          "mean": 5751.1,
+          "p50": 5711.5,
+          "median": 5711.5,
+          "p75": 6569.8,
+          "p90": 7260.8,
+          "p95": 7557.1,
+          "p99": 7709.8,
+          "p999": 7709.8
+        },
+        "http.response_time.2xx": {
+          "min": 3690,
+          "max": 7823,
+          "count": 90,
+          "mean": 5751.1,
+          "p50": 5711.5,
+          "median": 5711.5,
+          "p75": 6569.8,
+          "p90": 7260.8,
+          "p95": 7557.1,
+          "p99": 7709.8,
+          "p999": 7709.8
+        },
+        "plugins.metrics-by-endpoint.response_time./api/restaurants": {
+          "min": 3690,
+          "max": 7823,
+          "count": 90,
+          "mean": 5751.1,
+          "p50": 5711.5,
+          "median": 5711.5,
+          "p75": 6569.8,
+          "p90": 7260.8,
+          "p95": 7557.1,
+          "p99": 7709.8,
+          "p999": 7709.8
+        }
+      }
+    },
+    {
+      "counters": {
+        "vusers.created_by_name.0": 98,
+        "vusers.created": 98,
+        "http.requests": 120,
+        "plugins.metrics-by-endpoint./api/auth/login.errors.ERR_SOCKET_TIMEOUT": 61,
+        "errors.ERR_SOCKET_TIMEOUT": 114,
+        "vusers.failed": 114,
+        "plugins.metrics-by-endpoint./api/restaurants.errors.ERR_SOCKET_TIMEOUT": 53,
+        "http.codes.200": 22,
+        "http.responses": 22,
+        "http.downloaded_bytes": 87494,
+        "plugins.metrics-by-endpoint./api/restaurants.codes.200": 22
+      },
+      "rates": {
+        "http.request_rate": 12
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1778819800360,
+      "firstHistogramAt": 1778819804907,
+      "lastCounterAt": 1778819809993,
+      "lastHistogramAt": 1778819804955,
+      "firstMetricAt": 1778819800360,
+      "lastMetricAt": 1778819809993,
+      "period": "1778819800000",
+      "summaries": {
+        "http.response_time": {
+          "min": 5969,
+          "max": 7977,
+          "count": 22,
+          "mean": 6883.7,
+          "p50": 6976.1,
+          "median": 6976.1,
+          "p75": 7260.8,
+          "p90": 7557.1,
+          "p95": 7557.1,
+          "p99": 7865.6,
+          "p999": 7865.6
+        },
+        "http.response_time.2xx": {
+          "min": 5969,
+          "max": 7977,
+          "count": 22,
+          "mean": 6883.7,
+          "p50": 6976.1,
+          "median": 6976.1,
+          "p75": 7260.8,
+          "p90": 7557.1,
+          "p95": 7557.1,
+          "p99": 7865.6,
+          "p999": 7865.6
+        },
+        "plugins.metrics-by-endpoint.response_time./api/restaurants": {
+          "min": 5969,
+          "max": 7977,
+          "count": 22,
+          "mean": 6883.7,
+          "p50": 6976.1,
+          "median": 6976.1,
+          "p75": 7260.8,
+          "p90": 7557.1,
+          "p95": 7557.1,
+          "p99": 7865.6,
+          "p999": 7865.6
+        }
+      },
+      "histograms": {
+        "http.response_time": {
+          "min": 5969,
+          "max": 7977,
+          "count": 22,
+          "mean": 6883.7,
+          "p50": 6976.1,
+          "median": 6976.1,
+          "p75": 7260.8,
+          "p90": 7557.1,
+          "p95": 7557.1,
+          "p99": 7865.6,
+          "p999": 7865.6
+        },
+        "http.response_time.2xx": {
+          "min": 5969,
+          "max": 7977,
+          "count": 22,
+          "mean": 6883.7,
+          "p50": 6976.1,
+          "median": 6976.1,
+          "p75": 7260.8,
+          "p90": 7557.1,
+          "p95": 7557.1,
+          "p99": 7865.6,
+          "p999": 7865.6
+        },
+        "plugins.metrics-by-endpoint.response_time./api/restaurants": {
+          "min": 5969,
+          "max": 7977,
+          "count": 22,
+          "mean": 6883.7,
+          "p50": 6976.1,
+          "median": 6976.1,
+          "p75": 7260.8,
+          "p90": 7557.1,
+          "p95": 7557.1,
+          "p99": 7865.6,
+          "p999": 7865.6
+        }
+      }
+    },
+    {
+      "counters": {
+        "plugins.metrics-by-endpoint./api/restaurants.errors.ERR_SOCKET_TIMEOUT": 98,
+        "errors.ERR_SOCKET_TIMEOUT": 120,
+        "vusers.failed": 120,
+        "vusers.created_by_name.0": 99,
+        "vusers.created": 99,
+        "http.requests": 98,
+        "plugins.metrics-by-endpoint./api/auth/login.errors.ERR_SOCKET_TIMEOUT": 22
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1778819810001,
+      "lastCounterAt": 1778819819996,
+      "firstMetricAt": 1778819810001,
+      "lastMetricAt": 1778819819996,
+      "period": "1778819810000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "plugins.metrics-by-endpoint./api/restaurants.errors.ERR_SOCKET_TIMEOUT": 99,
+        "errors.ERR_SOCKET_TIMEOUT": 99,
+        "vusers.failed": 105,
+        "vusers.created_by_name.0": 98,
+        "vusers.created": 98,
+        "http.requests": 99,
+        "plugins.metrics-by-endpoint./api/restaurants.errors.ECONNREFUSED": 6,
+        "errors.ECONNREFUSED": 6
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1778819820019,
+      "lastCounterAt": 1778819829939,
+      "firstMetricAt": 1778819820019,
+      "lastMetricAt": 1778819829939,
+      "period": "1778819820000",
+      "summaries": {},
+      "histograms": {}
+    },
+    {
+      "counters": {
+        "plugins.metrics-by-endpoint./api/restaurants.errors.ERR_SOCKET_TIMEOUT": 73,
+        "errors.ERR_SOCKET_TIMEOUT": 73,
+        "vusers.failed": 145,
+        "vusers.created_by_name.0": 72,
+        "vusers.created": 72,
+        "http.requests": 72,
+        "plugins.metrics-by-endpoint./api/restaurants.errors.ECONNREFUSED": 72,
+        "errors.ECONNREFUSED": 72
+      },
+      "rates": {
+        "http.request_rate": 10
+      },
+      "http.request_rate": null,
+      "firstCounterAt": 1778819830066,
+      "lastCounterAt": 1778819837558,
+      "firstMetricAt": 1778819830066,
+      "lastMetricAt": 1778819837558,
+      "period": "1778819830000",
+      "summaries": {},
+      "histograms": {}
+    }
+  ]
+}
