@@ -1,5 +1,5 @@
 const db = require('../db');
-const emailService = require('../lib/emailService');
+const emailQueue = require('../queues/email.queue');
 
 /**
  * Get Order History for the authenticated user.
@@ -109,9 +109,18 @@ const createOrder = async (req, res) => {
             );
         }
 
-        // // Send confirmation email before responding
-        // [PLANTED PROBLEM]: This will block for 300-800ms
-        await emailService.sendConfirmation(orderId, req.user.email);
+        await emailQueue.add('send-confirmation', {
+            orderId,
+            userEmail: req.user.email,
+            orderData: {
+                id: orderId,
+                user_id: userId,
+                restaurant_id,
+                total,
+                status: 'pending',
+                items
+            }
+        });
 
         res.status(201).json({
             message: 'Order created successfully!',

@@ -2,6 +2,9 @@ const app = require('./app');
 const db = require('./db');
 require('dotenv').config();
 
+// Start background workers
+require('./workers/email.worker');
+
 // Inject query count storage into db module (Step 3 profiling)
 db.setQueryCountStorage(app.queryCountStorage);
 
