@@ -40,7 +40,10 @@ app.get('/api/health', restaurantController.getHealth);
 app.post('/api/auth/register', authController.register);
 app.post('/api/auth/login', authController.login);
 app.get('/api/restaurants', restaurantController.getRestaurants);
+app.post('/api/restaurants', restaurantController.createRestaurant);
 app.get('/api/restaurants/:id/menu', restaurantController.getMenu);
+app.put('/api/restaurants/:id', restaurantController.updateRestaurant);
+app.delete('/api/restaurants/:id', restaurantController.deleteRestaurant);
 
 // Authenticated Routes
 app.use('/api/orders', authMiddleware);
