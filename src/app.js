@@ -6,8 +6,7 @@ require('express-async-errors');
 
 const authController = require('./controllers/auth.controller');
 const restaurantController = require('./controllers/restaurant.controller');
-const orderController = require('./controllers/order.controller');
-const authMiddleware = require('./middleware/auth.middleware');
+const orderRoutes = require('./routes/order.routes');
 
 // Query counting context
 const queryCountStorage = new AsyncLocalStorage();
@@ -46,10 +45,7 @@ app.put('/api/restaurants/:id', restaurantController.updateRestaurant);
 app.delete('/api/restaurants/:id', restaurantController.deleteRestaurant);
 
 // Authenticated Routes
-app.use('/api/orders', authMiddleware);
-app.post('/api/orders', orderController.createOrder);
-app.get('/api/orders/history', orderController.getOrderHistory);
-app.get('/api/orders/:id', orderController.getOrderById);
+app.use('/api', orderRoutes);
 
 // Error Handling Middleware
 app.use((err, req, res, next) => {
