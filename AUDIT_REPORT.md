@@ -1,4 +1,107 @@
-# 🛡️ QuickBite API: Consistency & Audit Report
+# Build The Backbone - Performance Audit Report
+
+## Problem 1: N+1 Query in Order History
+
+Location:
+src/controllers/order.controller.js
+
+Issue:
+The API first loads orders, then loads order_items for every order, then loads menu_items for every item.
+
+Impact:
+Database queries grow rapidly as order count increases.
+
+Example:
+
+1 query -> orders
+
+N queries -> order_items
+
+M queries -> menu_items
+
+Total:
+1 + N + M
+
+Recommendation:
+Replace nested queries with SQL JOINs.
+
+Expected Improvement:
+Significant reduction in database round trips.
+
+
+
+## Problem 2: Blocking Email Sending
+
+Location:
+src/controllers/order.controller.js
+
+Issue:
+
+await emailService.sendConfirmation(...)
+
+is executed before sending the HTTP response.
+
+Impact:
+
+300-800ms delay added to every order creation request.
+
+Recommendation:
+
+Move email sending to a background queue or asynchronous task.
+
+Expected Improvement:
+
+Faster response times for create-order API.
+
+
+
+## Problem 3: Missing Database Indexes
+
+Location:
+src/controllers/restaurant.controller.js
+
+Issue:
+
+Restaurant search filters by city.
+
+Without indexes, PostgreSQL performs full table scans.
+
+Recommendation:
+
+Create indexes on:
+
+restaurants(city)
+
+menu_items(restaurant_id)
+
+order_items(order_id)
+
+Expected Improvement:
+
+Much faster filtering and lookup operations.
+
+
+
+## Problem 4: N+1 Query in Menu API
+
+Location:
+src/controllers/restaurant.controller.js
+
+Issue:
+
+The API fetches menu items and then performs a separate category query for every item.
+
+Impact:
+
+Query count increases linearly with menu size.
+
+Recommendation:
+
+Use JOIN between menu_items and categories.
+
+Expected Improvement:
+
+Single database query instead of N+1 queries.# 🛡️ QuickBite API: Consistency & Audit Report
 
 **Audit Date**: April 2026  
 **Auditor**: Antigravity Senior Backend Engineer  
